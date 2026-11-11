@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+ <html lang="id">
+ <head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Ocean Anuitas — Kalkulator Laut</title>
+ <style>
+ :root{--navy:#073b66;--blue:#087ca7;--sky:#a9e7f5;--foam:#f4ffff;--sand:#ffe29a;--coral:#ff8e79;--ink:#103b59;--glass:rgba(255,255,255,.78)}
+ *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family: "Trebuchet MS",system-ui,sans-serif;color:var(--ink);background:linear-gradient(180deg,#b9f0fb 0%,#65cbe7 35%,#087da9 72%,#06446d 100%);min-height:100vh;overflow-x:hidden}
+ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;background-image:radial-gradient(circle at 12% 22%,white 0 2px,transparent 3px),radial-gradient(circle at 82% 35%,white 0 3px,transparent 4px),radial-gradient(circle at 65% 76%,white 0 2px,transparent 3px);background-size:100px 130px,160px 170px,120px 110px;z-index:-1}
+   header{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px clamp(14px,4vw,42px);background:rgba(244,253,255,.8);backdrop-filter:blur(16px);border-bottom:1px solid #fff9;box-shadow:0 8px 28px #06446d15}
+   .brand{font-weight:1000;letter-spacing:.4px;color:var(--navy);display:flex;align-items:center;gap:9px}.brand-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:14px;background:linear-gradient(145deg,#ffe7a8,#fff8d8);box-shadow:inset 0 2px #fff,0 5px 12px #d6a74944;font-size:22px}
+.progress{display:flex;gap:5px;align-items:center}.dot{width:9px;height:9px;border-radius:50%;background:#b5dce6;transition:.25s}.dot.active{width:25px;border-radius:8px;background:linear-gradient(90deg,#ffcf69,#ff987e);box-shadow:0 0 12px #ffcf69aa}
+   main{width:min(1040px,94vw);margin:26px auto 60px}.slide{display:none!important;position:relative;min-height:70vh;animation:rise .5s ease both}.slide.active{display:block!important}.slide[hidden]{display:none!important}@keyframes rise{from{opacity:0;transform:translateY(14px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+   .panel{position:relative;overflow:hidden;border:1px solid #ffffffb8;border-radius:30px;background:linear-gradient(145deg,rgba(255,255,255,.94),rgba(237,252,255,.82));box-shadow:0 22px 60px #063a5d30,inset 0 1px 0 white;padding:clamp(20px,4vw,42px)}
+   .panel:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-90px;top:-110px;background:linear-gradient(135deg,#bcefff88,#fff0);pointer-events:none}
+   .eyebrow{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;background:#dff8ff;color:#08769a;font-weight:900;font-size:.76rem;letter-spacing:1px;text-transform:uppercase}
+   h1,h2,h3,p{margin-top:0}h1{font-size:clamp(2.5rem,7vw,5.7rem);line-height:.95;letter-spacing:-3px;color:var(--navy);margin:20px 0}h1 span{color:#0c9dc4;text-shadow:0 4px 0 #b8f2f6}h2{font-size:clamp(1.8rem,4vw,3rem);letter-spacing:-1.4px;color:var(--navy);margin:13px 0}h3{color:var(--navy)}.lead{font-size:clamp(1rem,2vw,1.2rem);line-height:1.7;color:#426b80;max-width:650px}
+   .hero{min-height:75vh;display:flex;flex-direction:column;justify-content:center}.hero .panel{min-height:72vh;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(160deg,#f7ffff 0%,#e1f9ff 47%,#fff0c9 100%)}
+   .hero-art{position:absolute;right:2%;bottom:8%;width:min(39%,300px);height:240px;pointer-events:none}.sun{position:absolute;right:15%;top:5%;width:80px;height:80px;border-radius:50%;background:#ffdb78;box-shadow:0 0 0 14px #ffe7a855,0 0 55px #ffdb78aa}.wave{position:absolute;bottom:0;left:0;width:100%;height:125px;background:linear-gradient(180deg,#67d4e7,#087fa8);border-radius:48% 52% 0 0 / 22% 26% 0 0;transform:rotate(-3deg)}.wave:after{content:"";position:absolute;left:-10%;top:-18px;width:120%;height:45px;border-radius:50%;background:#a3eaf1}.palm{position:absolute;bottom:56px;right:20%;font-size:90px;filter:drop-shadow(0 7px 2px #07527a33);transform:rotate(-7deg)}.fish{position:absolute;left:12%;bottom:52px;font-size:44px;animation:swim 4s ease-in-out infinite}.star{position:absolute;right:8%;bottom:30px;font-size:33px;animation:float 3s ease-in-out infinite}@keyframes swim{50%{transform:translate(15px,-8px)}}@keyframes float{50%{transform:translateY(-9px) rotate(12deg)}}
+   .names{margin-top:20px;padding:16px 18px;border:1px dashed #9bd9e7;border-radius:18px;background:#ffffffb8;max-width:430px}.names strong{display:block;margin-bottom:6px}.names p{margin:5px 0;color:#527286;font-size:.92rem}
+   .nav{display:flex;justify-content:space-between;gap:12px;margin:20px 2px 0}.btn{border:0;cursor:pointer;font:inherit;font-weight:900;border-radius:16px;padding:13px 20px;transition:transform .18s,box-shadow .18s,filter .18s;box-shadow:0 6px 0 #06476a26,0 10px 22px #087fa82a;position:relative;overflow:hidden}.btn:before{content:"";position:absolute;top:0;left:10%;width:80%;height:42%;background:linear-gradient(#ffffff88,#ffffff00);border-radius:0 0 50% 50%;pointer-events:none}.btn:hover{transform:translateY(-3px);filter:saturate(1.1);box-shadow:0 8px 0 #06476a22,0 14px 28px #087fa844}.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #06476a22}.primary{color:white;background:linear-gradient(135deg,#16b7d5,#0876ac)}.sunny{color:#674b17;background:linear-gradient(135deg,#ffe88f,#ffbf66)}.soft{color:#17617d;background:linear-gradient(135deg,#e5fbff,#c6f0fa);box-shadow:0 5px 0 #83c8d544}.danger{color:#7c3e39;background:linear-gradient(135deg,#ffd4c8,#ff9e8d)}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ffbd4b;outline-offset:3px}
+   .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:25px}.step{padding:19px;border-radius:22px;background:linear-gradient(145deg,#fff,#e7faff);border:1px solid #c5edf5;box-shadow:0 8px 20px #0a739012}.step .num{display:grid;place-items:center;width:42px;height:42px;border-radius:15px;background:linear-gradient(145deg,#ffe9a8,#ffc76d);color:#704f19;font-weight:1000;font-size:1.1rem;margin-bottom:13px;box-shadow:inset 0 2px white}.step p{font-size:.92rem;line-height:1.55;color:#537589;margin-bottom:0}
+   .formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field{padding:16px;border-radius:18px;background:#f1fbff;border:1px solid #d4f0f6}.field label{display:block;font-size:.88rem;font-weight:900;color:#315f78;margin-bottom:9px}.field input,.field select{width:100%;border:1px solid #b9e0ea;background:white;color:#103b59;border-radius:12px;padding:13px;font:inherit;font-weight:800;outline:none}.field small{display:block;color:#7795a5;margin-top:7px;font-size:.78rem}.form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.result-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}.metric{border-radius:18px;padding:17px;background:linear-gradient(145deg,#e4faff,#fff);border:1px solid #c5edf5}.metric small{display:block;color:#608296;font-weight:800;margin-bottom:7px}.metric strong{font-size:clamp(1rem,2.4vw,1.45rem);color:var(--navy);overflow-wrap:anywhere}.formula{border-radius:20px;padding:20px;background:linear-gradient(135deg,#073f68,#0c81a7);color:white;margin-top:18px;box-shadow:inset 0 1px #ffffff55}.formula h3{color:#ffdf8d;margin-bottom:10px}.equation{font-size:clamp(1rem,2.5vw,1.45rem);font-weight:900;overflow-wrap:anywhere;line-height:1.8}.formula p{color:#d8f5ff;margin:8px 0 0;line-height:1.6;font-size:.92rem}
+   .table-wrap{overflow:auto;border:1px solid #c8eaf2;border-radius:18px;background:white;margin-top:15px;max-height:460px}table{border-collapse:collapse;width:100%;min-width:640px;font-size:.9rem}th{position:sticky;top:0;background:#0a628c;color:white;text-align:left;padding:13px 12px}td{padding:11px 12px;border-bottom:1px solid #e2f3f7;white-space:nowrap}tbody tr:nth-child(even){background:#f0fbff}tbody tr:hover{background:#fff5d7}.table-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px}.table-tools select{padding:10px;border:1px solid #b9e0ea;border-radius:12px;background:white;color:var(--ink);font:inherit;font-weight:700}.annual-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:15px}.annual{border-radius:18px;padding:16px;background:linear-gradient(145deg,#fff,#e6faff);border:1px solid #c6edf5}.annual h3{margin-bottom:10px}.annual p{margin:5px 0;color:#56778b;font-size:.9rem}.annual strong{color:#0a5b80}.final-card{text-align:center;background:linear-gradient(150deg,#f9ffff,#dff8ff 55%,#ffedbf)}.big-number{font-size:clamp(2.2rem,7vw,4.5rem);font-weight:1000;letter-spacing:-2px;color:#087ca7;margin:14px 0;text-shadow:0 3px #fff}.final-bubble{display:inline-block;border-radius:999px;background:#fff4c8;padding:8px 14px;font-weight:900;color:#77591b}.decor{position:absolute;opacity:.9;pointer-events:none;user-select:none}.decor.d1{right:20px;bottom:15px;font-size:42px}.decor.d2{left:18px;top:15px;font-size:29px}.footnote{color:#7692a1;font-size:.8rem;line-height:1.6;margin-top:14px}.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;background:#073b66;color:white;padding:12px 18px;border-radius:14px;box-shadow:0 10px 30px #00324b55;z-index:50;transition:.25s;pointer-events:none;max-width:90vw;text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}
+   footer{text-align:center;color:#e6faff;padding:8px 15px 28px;font-size:.82rem}footer span{color:#ffe39b}
+   @media(max-width:680px){header{padding:10px 14px}.brand{font-size:.88rem}.brand-mark{width:33px;height:33px}.progress{gap:4px}.dot{width:7px;height:7px}.dot.active{width:19px}main{margin:15px auto 35px}.panel{border-radius:23px;padding:21px 17px}.hero-art{width:170px;height:155px;right:0;bottom:4%;opacity:.8}.sun{width:48px;height:48px}.wave{height:80px}.palm{font-size:55px;bottom:35px}.fish{font-size:27px;bottom:30px}.star{font-size:22px;bottom:20px}h1{font-size:clamp(2.4rem,13vw,4rem);letter-spacing:-2px}.hero .lead{max-width:90%;font-size:.98rem}.names{max-width:85%}.steps{grid-template-columns:1fr}.step{display:grid;grid-template-columns:48px 1fr;gap:0 10px;padding:14px}.step .num{grid-row:span 2;margin:0}.step h3{margin:2px 0 4px}.step p{grid-column:2}.formgrid{grid-template-columns:1fr}.result-strip{grid-template-columns:1fr}.metric{padding:14px}.annual-grid{grid-template-columns:1fr}.nav .btn{padding:12px 15px}.slide{min-height:65vh}.decor.d1{font-size:30px}.equation{font-size:1rem}}
+   @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+   </style>
+ </head>
+ <body>
+   <header>
+     <div class="brand"><span class="brand-mark">☀</span><span>OCEAN <span style="color:#0d9fc4">ANUITAS</span></span></div>
+     <div class="progress" id="progress" aria-label="Progres slide"></div>
+   </header>
+   <main>
+     <section class="slide active hero" data-title="Pembukaan">
+       <div class="panel">
+         <span class="eyebrow">✦ matematika finansial · project kelompok</span>
+         <h1>Ride the<br><span>Money Wave.</span></h1>
+         <p class="lead">Belajar anuitas jadi lebih seru. Jelajahi cara menghitung cicilan tetap, memahami bunga, dan melihat perjalanan pinjaman sampai lunas.</p>
+         <div class="names"><strong>✦ kelompok: <span contenteditable="true" style="color:#087ca7">6</span></strong>
+         <p contenteditable="true">1. Ashyla Salis Khoirunissa </p><p contenteditable="true">2. Farihna Qowwamah Bilqist </p><p contenteditable="true">3. Rakha Madani </p>
+         <p contenteditable="true">4. Reghina Althofunnisa </p><p contenteditable="true">5. Reifal Lerryk Loveiantino </p><p contenteditable="true" </p>
+         </div>
+         <div class="hero-art" aria-hidden="true"><div class="sun"></div><div class="wave"></div><div class="palm">🌴</div><div class="fish">🐠</div><div class="star">⭐</div></div>
+         <span class="decor d1">🦀</span><span class="decor d2">☁</span>
+       </div>
+       <div class="nav"><span></span><button class="btn sunny" onclick="go(1)">Mulai petualangan <span>→</span></button></div>
+     </section>
+     <section class="slide" hidden data-title="Cara penggunaan">
+       <div class="panel"><span class="eyebrow">01 · how to use</span><h2>Gampang kok,<br>ikuti arusnya!</h2><p class="lead">Cukup isi tiga informasi utama. Biar kalkulator yang mengerjakan hitungannya.</p>
+       <div class="steps">
+         <article class="step"><div class="num">01</div><h3>Masukkan pinjaman</h3><p>Isi jumlah uang yang dipinjam, misalnya Rp12.000.000.</p></article>
+         <article class="step"><div class="num">02</div><h3>Atur bunga & waktu</h3><p>Masukkan suku bunga per tahun dan lama pinjaman dalam tahun.</p></article>
+         <article class="step"><div class="num">03</div><h3>Hitung & jelajahi</h3><p>Tekan tombol hitung untuk melihat cicilan, rumus, tabel bulanan, dan ringkasan tahunan.</p></article>
+       </div>
+       <div class="formula"><h3>Kenalan dengan anuitas</h3><div class="equation">Anuitas = angsuran pokok + bunga</div><p>Total pembayaran tiap periode dibuat tetap, sedangkan bagian bunga dan pokok berubah seiring berkurangnya sisa pinjaman.</p></div>
+       <span class="decor d1">🐳</span>
+       </div><div class="nav"><button class="btn soft" onclick="go(0)">← Kembali</button><button class="btn primary" onclick="go(2)">Buka kalkulator →</button></div>
+     </section>
+     <section class="slide" hidden data-title="Kalkulator">
+       <div class="panel"><span class="eyebrow">02 · calculator lagoon</span><h2>Kalkulator<br><span style="color:#0b9bc0">anuitas</span></h2><p class="lead">Ubah angka sesuai soalmu. Pilih satuan bunga dan satuan jangka waktu sesuai soal, lalu hitung anuitasnya.</p>
+       <div class="formgrid">
+         <div class="field"><label for="principal">💰 Jumlah pinjaman (Rp)</label><input id="principal" type="number" min="1" step="100000" value="12000000"><small>Contoh: 12000000</small></div>
+         <div class="field"><label for="rate">🌊 Suku bunga (%)</label><input id="rate" type="number" min="0" max="1000" step="0.1" value="12"><label for="rateUnit" style="margin-top:12px">Satuan bunga</label><select id="rateUnit"><option value="year">Per tahun</option><option value="month">Per bulan</option></select><small>Bisa pilih bunga per bulan atau per tahun.</small></div>
+         <div class="field"><label for="years">🐚 Jangka waktu</label><input id="years" type="number" min="1" max="1200" step="1" value="2"><label for="termUnit" style="margin-top:12px">Satuan periode</label><select id="termUnit"><option value="year">Tahun</option><option value="month">Bulan</option></select><small>Masukkan durasi sesuai satuan yang dipilih.</small></div>
+         <div class="field"><label for="frequency">🗓 Periode pembayaran</label><select id="frequency"><option value="12">Bulanan (12 kali/tahun)</option><option value="4">Triwulanan (4 kali/tahun)</option><option value="2">Semesteran (2 kali/tahun)</option><option value="1">Tahunan (1 kali/tahun)</option></select><small>Bunga per periode menyesuaikan frekuensi</small></div>
+       </div>
+       <div class="form-actions"><button class="btn primary" onclick="calculate(true)">✦ Hitung anuitas</button><button class="btn sunny" onclick="go(3)">Lihat cara hitung →</button><button class="btn danger" onclick="resetCalc()">↻ Reset</button></div>
+       <div id="calcStatus" class="footnote" aria-live="polite">Nilai contoh sudah diisi. Tekan "Hitung anuitas" untuk menghitung.</div>
+       <div class="result-strip" id="metrics">
+         <div class="metric"><small>Cicilan per periode</small><strong id="payment">Rp —</strong></div>
+         <div class="metric"><small>Total bunga</small><strong id="totalInterest">Rp —</strong></div>
+         <div class="metric"><small>Total pembayaran</small><strong id="totalPaid">Rp —</strong></div>
+         </div><span class="decor d1">🐟</span>
+         </div><div class="nav"><button class="btn soft" onclick="go(1)">← Cara penggunaan</button><button class="btn primary" onclick="go(3)">Lanjut ke rumus →</button></div>
+     </section>
+     <section class="slide" hidden data-title="Cara menghitung">
+       <div class="panel"><span class="eyebrow">03 · behind the waves</span><h2>Begini cara<br>menghitungnya.</h2><p class="lead">Kalkulator menggunakan rumus anuitas untuk mendapatkan pembayaran tetap setiap periode.</p>
+       <div class="formula"><h3>Rumus anuitas</h3><div class="equation">A = P × i / [1 − (1 + i)<sup>−n</sup>]</div><p><b>A</b> = cicilan per periode · <b>P</b> = pinjaman awal · <b>i</b> = bunga per periode dalam desimal · <b>n</b> = jumlah seluruh periode.</p></div>
+       <div class="result-strip">
+         <div class="metric"><small>1 · Pinjaman awal (P)</small><strong id="showP">Rp12.000.000</strong></div>
+         <div class="metric"><small>2 · Bunga per periode (i)</small><strong id="showI">1%</strong></div>
+         <div class="metric"><small>3 · Jumlah periode (n)</small><strong id="showN">24 periode</strong></div>
+       </div>
+       <div class="formula" style="background:linear-gradient(135deg,#fff0bf,#ffe2a0);color:#684d1c"><h3 style="color:#684d1c">Urutan setiap periode</h3><div class="equation" style="color:#684d1c">Bunga = sisa pinjaman × i</div><div class="equation" style="color:#684d1c">Pokok = anuitas − bunga</div><div class="equation" style="color:#684d1c">Sisa baru = sisa lama − pokok</div><p style="color:#775e2e">Bagian bunga biasanya makin kecil dan bagian angsuran pokok makin besar ketika sisa pinjaman menurun.</p></div>
+       <p class="footnote">Angka di atas mengikuti nilai yang terakhir dihitung pada slide kalkulator. Pembulatan rupiah dilakukan saat menampilkan hasil.</p><span class="decor d1">🦈</span>
+       </div><div class="nav"><button class="btn soft" onclick="go(2)">← Kalkulator</button><button class="btn primary" onclick="go(4)">Lihat tabel →</button></div>
+     </section>
+     <section class="slide" hidden data-title="Tabel anuitas">
+       <div class="panel"><span class="eyebrow">04 · payment journal</span><h2>Jejak cicilan<br>di bawah laut.</h2><p class="lead">Lihat pembagian pembayaran untuk bunga, pokok, dan sisa pinjaman. Tabel mengikuti hasil kalkulator.</p>
+       <div class="result-strip">
+         <div class="metric"><small>Angsuran per periode</small><strong id="tablePayment">Rp —</strong></div>
+         <div class="metric"><small>Jumlah periode</small><strong id="tableN">—</strong></div>
+         <div class="metric"><small>Sisa akhir</small><strong id="tableBalance">Rp —</strong></div>
+       </div>
+       <div class="table-tools"><strong>Rincian per periode</strong><label for="tableFilter">Tampilkan: <select id="tableFilter" onchange="renderTable()">
+         <option value="all">Semua periode</option>
+         <option value="month">Per Bulan</option>
+         <option value="year">Per Tahun</option>
+         </select></label></div>
+         <div class="table-wrap"><table><thead id="tableHead"></thead><tbody id="tableBody"></tbody></table></div>
+         <h3 style="margin-top:24px">Ringkasan</h3><div class="annual-grid" id="annualGrid"></div>
+         <p class="footnote">Catatan: tabel memakai nilai perhitungan internal dengan presisi penuh, lalu nominal ditampilkan dalam rupiah. Baris terakhir disesuaikan agar sisa pinjaman menjadi nol akibat pembulatan.</p><span class="decor d1">🐙</span>
+         </div><div class="nav"><button class="btn soft" onclick="go(3)">← Cara hitung</button><button class="btn primary" onclick="go(5)">Lihat hasil akhir →</button></div>
+     </section>
+     <section class="slide" hidden data-title="Hasil akhir">
+       <div class="panel final-card"><span class="eyebrow">05 · treasure unlocked</span><div style="font-size:55px;margin:15px 0">🐳 ✦ 🐚</div><h2>Petualangan<br>anuitas selesai!</h2><p class="lead" style="margin:0 auto">Ini rangkuman perhitungan dari data yang kamu masukkan.</p>
+       <div class="final-bubble" style="margin-top:22px">Cicilan tetap per periode</div><div class="big-number" id="finalPayment">Rp —</div>
+       <div class="result-strip">
+         <div class="metric"><small>Pinjaman awal</small><strong id="finalP">Rp —</strong></div>
+         <div class="metric"><small>Total bunga</small><strong id="finalInterest">Rp —</strong></div>
+         <div class="metric"><small>Total pembayaran</small><strong id="finalTotal">Rp —</strong></div>
+       </div>
+       <div class="formula" style="text-align:left"><h3>Kesimpulan</h3><p id="conclusion" style="font-size:1rem">Masukkan data dan hitung untuk melihat kesimpulan.</p></div>
+       <p class="footnote">Terima kasih sudah menyelami matematika finansial bersama kelompok kami. Semoga sekarang anuitas terasa lebih mudah dipahami!</p><span class="decor d1">🦀</span><span class="decor d2">⭐</span>
+       </div><div class="nav"><button class="btn soft" onclick="go(4)">← Kembali ke tabel</button><button class="btn sunny" onclick="go(0)">↻ Ulangi presentasi</button></div>
+     </section>
+   </main>
+   <footer>made with <span>☀ sunshine</span> & ocean vibes · Ocean Anuitas</footer>
+   <div class="toast" id="toast" role="status"></div>
+   <script>
+   const slides = [...document.querySelectorAll('.slide')];
+     let current = 0, calc = {};
+     slides.forEach((s, j) => {
+     s.hidden = j !== 0;
+     s.classList.toggle('active', j === 0);
+     s.setAttribute('aria-hidden', String(j !== 0));
+       });
+     const rupiah = n => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(Math.round(n || 0));
+     const num = n => new Intl.NumberFormat('id-ID', { maximumFractionDigits: 2 }).format(n);
+     function go(i) {
+       current = Math.max(0, Math.min(slides.length - 1, i));
+       slides.forEach((s, j) => {
+         const visible = j === current;
+         s.hidden = !visible;
+         s.classList.toggle('active', visible);
+         s.setAttribute('aria-hidden', String(!visible));
+         });
+     document.querySelectorAll('.dot').forEach((d, j) => d.classList.toggle('active', j === current));
+       window.scrollTo({ top: 0, behavior: 'smooth' });
+       if (current === 3) updateFormula();
+       if (current === 4) renderTable();
+       if (current === 5) updateFinal();
+     }
+     const progress = document.getElementById('progress');
+     slides.forEach((s, i) => {
+       const d = document.createElement('span');
+       d.className = 'dot' + (i === 0 ? ' active' : '');
+       d.title = (i + 1) + '. ' + s.dataset.title;
+       progress.appendChild(d);
+     });
+     function toast(msg) {
+       const t = document.getElementById('toast');
+       t.textContent = msg;
+       t.classList.add('show');
+       setTimeout(() => t.classList.remove('show'), 2600);
+     }
+     function calculate(showMessage = false) {
+       const P = Number(document.getElementById('principal').value),
+         rate = Number(document.getElementById('rate').value),
+         rateUnit = document.getElementById('rateUnit').value,
+         term = Number(document.getElementById('years').value),
+         termUnit = document.getElementById('termUnit').value,
+         freq = Number(document.getElementById('frequency').value);
+       if (!Number.isFinite(P) || P <= 0 || !Number.isFinite(rate) || rate < 0 || rate > 1000 || !Number.isFinite(term) || term < 1 || term > 1200 || !Number.isInteger(term) || !freq) {
+         toast('Cek input. Pinjaman harus positif, bunga 0–1000%, dan jangka waktu berupa bilangan bulat.');
+         return false;
+       }
+       const years = termUnit === 'month' ? term / 12 : term;
+       const annual = rateUnit === 'month' ? rate * 12 : rate;
+       const exactN = years * freq, n = Math.round(exactN);
+       if (Math.abs(exactN - n) > 1e-8) {
+         toast('Satuan jangka waktu belum cocok dengan periode pembayaran. Coba pilih periode pembayaran yang sesuai.');
+         return false;
+       }
+       const i = (annual / 100) / freq;
+       if (n < 1 || n > 1200) {
+         toast('Jumlah periode harus antara 1 dan 1200.');
+         return false;
+       }
+       const A = i === 0 ? P / n : P * i / (1 - Math.pow(1 + i, -n));
+       if (!Number.isFinite(A)) {
+         toast('Angka belum bisa dihitung. Periksa input.');
+         return false;
+       }
+       let balance = P, rows = [], interestTotal = 0, paidTotal = 0;
+       for (let k = 1; k <= n; k++) {
+         const interest = balance * i;
+         let payment = A, principal = payment - interest, newBalance = balance - principal;
+         if (k === n) {
+           principal = balance;
+           payment = principal + interest;
+           newBalance = 0;
+         }
+         if (newBalance < 0 && Math.abs(newBalance) < 0.0001) newBalance = 0;
+         rows.push({ period: k, year: Math.ceil(k / freq), payment, interest, principal, balance: newBalance });
+         interestTotal += interest;
+         paidTotal += payment;
+         balance = newBalance;
+       }
+       calc = { P, annual, rate, rateUnit, term, termUnit, years, freq, n, i, A, rows, interestTotal, paidTotal };
+       document.getElementById('payment').textContent = rupiah(A);
+       document.getElementById('totalInterest').textContent = rupiah(interestTotal);
+       document.getElementById('totalPaid').textContent = rupiah(paidTotal);
+       document.getElementById('calcStatus').textContent = `Berhasil dihitung: ${n} periode pembayaran, dengan bunga ${num(rate)}% per ${rateUnit === 'month' ? 'bulan' : 'tahun'} (${num(annual)}% nominal per tahun).`;
+       updateFormula();
+       renderTable();
+       updateFinal();
+       if (showMessage) toast('Yeay! Perhitungan anuitas berhasil ✦');
+       return true;
+     }
+     function updateFormula() {
+       if (!calc.P) return;
+       document.getElementById('showP').textContent = rupiah(calc.P);
+       document.getElementById('showI').textContent = num(calc.i * 100) + '%';
+       document.getElementById('showN').textContent = calc.n + ' periode';
+     }
+     function renderTable() {
+       if (!calc.rows) return;
+       document.getElementById('tablePayment').textContent = rupiah(calc.A);
+       document.getElementById('tableN').textContent = calc.n + ' periode';
+       document.getElementById('tableBalance').textContent = rupiah(0);
+       const filter = document.getElementById('tableFilter').value;
+       const head = document.getElementById('tableHead');
+       const body = document.getElementById('tableBody');
+       const annualGrid = document.getElementById('annualGrid');
+       if (filter === 'year') {
+         head.innerHTML = '<tr><th>Tahun</th><th>Jumlah periode</th><th>Total pembayaran</th><th>Total bunga</th><th>Total pokok</th><th>Sisa akhir tahun</th></tr>';
+         const groups = {};
+         calc.rows.forEach(r => {
+           if (!groups[r.year]) groups[r.year] = { year: r.year, count: 0, payment: 0, interest: 0, principal: 0, balance: r.balance };
+           const g = groups[r.year];
+           g.count++; g.payment += r.payment; g.interest += r.interest; g.principal += r.principal; g.balance = r.balance;
+         });
+         body.innerHTML = Object.values(groups).map(g =>
+           `<tr><td>${g.year}</td><td>${g.count}</td><td>${rupiah(g.payment)}</td><td>${rupiah(g.interest)}</td><td>${rupiah(g.principal)}</td><td>${rupiah(g.balance)}</td></tr>`
+                                                    ).join('');
+         annualGrid.innerHTML = '';
+         } else if (filter === 'month') {
+         head.innerHTML = '<tr><th>Bulan ke-</th><th>Angsuran (Rp)</th><th>Bunga (Rp)</th><th>Pokok (Rp)</th><th>Sisa Pinjaman (Rp)</th></tr>';
+         body.innerHTML = calc.rows.map(r =>
+          `<tr><td>${r.period}</td><td>${rupiah(r.payment)}</td><td>${rupiah(r.interest)}</td><td>${rupiah(r.principal)}</td><td>${rupiah(r.balance)}</td></tr>`
+                                        ).join('');
+         annualGrid.innerHTML = '';
+         } else {
+         head.innerHTML = '<tr><th>Periode ke-</th><th>Tahun</th><th>Anuitas</th><th>Bunga</th><th>Angsuran pokok</th><th>Sisa pinjaman</th></tr>';
+         body.innerHTML = calc.rows.map(r =>
+           `<tr><td>${r.period}</td><td>${r.year}</td><td>${rupiah(r.payment)}</td><td>${rupiah(r.interest)}</td><td>${rupiah(r.principal)}</td><td>${rupiah(r.balance)}</td></tr>`
+                                        ).join('');
+         annualGrid.innerHTML = '';
+                                                   }
+     }
+     function updateFinal() {
+       if (!calc.P) return;
+       document.getElementById('finalPayment').textContent = rupiah(calc.A);
+       document.getElementById('finalP').textContent = rupiah(calc.P);
+       document.getElementById('finalInterest').textContent = rupiah(calc.interestTotal);
+       document.getElementById('finalTotal').textContent = rupiah(calc.paidTotal);
+       const period = calc.freq === 12 ? 'bulan' : calc.freq === 4 ? 'triwulan' : calc.freq === 2 ? 'semester' : 'tahun';
+       document.getElementById('conclusion').textContent =arguments
+       `Dengan pinjaman ${rupiah(calc.P)}, bunga ${num(calc.rate)}% per ${calc.rateUnit === 'month' ? 'bulan' : 'tahun'} (${num(calc.annual)}% nominal per tahun), dan jangka waktu ${num(calc.term)} ${calc.termUnit === 'month' ? 'bulan' : 'tahun'}, pembayaran anuitas sekitar ${rupiah(calc.A)} setiap ${period}. Total bunga yang dibayar sekitar ${rupiah(calc.interestTotal)}, sehingga total pembayaran menjadi ${rupiah(calc.paidTotal)}. Bagian bunga dihitung dari sisa pinjaman tiap periode, sedangkan sisanya digunakan untuk membayar pokok.`;
+     }
+     function resetCalc() {
+       document.getElementById('principal').value = 12000000;
+       document.getElementById('rate').value = 12;
+       document.getElementById('years').value = 2;
+       document.getElementById('rateUnit').value = 'year';
+       document.getElementById('termUnit').value = 'year';
+       document.getElementById('frequency').value = '12';
+       document.getElementById('tableFilter').value = 'all';
+       calculate(false);
+       toast('Kalkulator kembali ke angka contoh.');
+     }
+     ['principal', 'rate', 'years', 'rateUnit', 'termUnit', 'frequency'].forEach(id => {
+       document.getElementById(id).addEventListener('change', () => {
+         document.getElementById('calcStatus').textContent = 'Input berubah. Tekan "Hitung anuitas" untuk memperbarui hasil.';
+         });
+       });
+     calculate(false);
+</script>
+ </body>
+ </html>
+
+   

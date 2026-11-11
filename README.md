@@ -1,1 +1,0 @@
-# Tabel-anuitas-kelompok-6
